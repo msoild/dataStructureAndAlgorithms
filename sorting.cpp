@@ -4,11 +4,15 @@
 /*common function */
 void swap(int& a, int& b);
 void traverse(int* array , size_t len);
+int getMidValuePos(int*a , int low, int middle, int high);
 
 /* sorting impl*/
 //swap
 void bubbleSort(int* array, size_t len);
 void bubbleSortOptimize(int* array, size_t len);
+
+//https://blog.csdn.net/sinat_20177327/article/details/76560079 easy to understand
+//and this blog form a啊哈！算法
 void quitSort(int* a, int low, int high); //meet and kiss
 
 
@@ -19,7 +23,7 @@ void testSort();
 
 int main(void) 
 {
-    testBubbleSort();
+    testSort();
     return 0;
 }
 
@@ -37,6 +41,40 @@ void traverse(int* a  , size_t n) {
         printf("%d ", a[i]);
     }
     printf("\n");
+}
+
+int getMidValuePos(int*a , int left, int mid, int right){
+    if(a[left] >a[mid])
+    {
+        if(a[mid] > a[right])
+        {
+            return mid;
+        }
+        else if(a[left] > a[right])
+        {
+            return right;
+        }
+        else
+        {
+            return left;
+        }
+    }
+    else //a[left] < a[mid]
+    {
+        if(a[mid] < a[right])
+        {
+            return mid;
+        }
+        else if(a[left] > a[right])
+        {
+            return right;
+        }
+        else
+        {
+            return left;
+        }
+    }
+
 }
 //upper sort  0 1 2
 void bubbleSort(int* a , size_t n) {
@@ -79,11 +117,18 @@ void bubbleSortOptimize(int* a, size_t n) {
 }
 
 void quickSort(int* a, int low, int high) {
-    int i = low;
-    int j = high;
-    if(i > j ) {
+   
+    if(low >= high ) {
         return;
     }
+
+    int middleIndexOfArray = low +(high - low)/2;
+    int middleValueIndex = getMidValuePos(a , low, middleIndexOfArray, high);
+    if(middleValueIndex != low) {
+        swap(a[middleValueIndex], a[low]);
+    }
+    int i = low;
+    int j = high;
     int tmpValue = a[i];
 
     while (i != j)
@@ -99,10 +144,12 @@ void quickSort(int* a, int low, int high) {
     }
     //meet and kiss then do thing
     swap(a[low], a[i]);
-    quitSort(a, low, i-1);
-    quitSort(a, i+1, high);
+    quickSort(a, low, i-1);
+    quickSort(a, i+1, high);
     
 }
+
+
 
 void testSort() {
     //升序排序
