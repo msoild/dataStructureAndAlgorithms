@@ -24,11 +24,21 @@ int main(void)
 	int val;
 	pHead=create_list();//creat_list()功能：创建一个非循环单链表,并将该链表的头节点的地址付给pHead
 	traverse_list(pHead);
+    sort_list(pHead);
+    traverse_list(pHead);
+
     int len = length_list(pHead);
     printf("list len %d\n", len);
-    insert_list(pHead, len, len+1)
+    insert_list(pHead, len, len+1);
     len = length_list(pHead);
     printf("list len after insert %d\n", len);
+    traverse_list(pHead);
+    int deletedNodeValue = 0;
+    if(delete_list(pHead, len -2, &deletedNodeValue)) {
+        printf("delete node is %d, value is %d", len-2, deletedNodeValue);
+    }
+
+    traverse_list(pHead);
 
 	return 0;
 }
@@ -78,7 +88,7 @@ bool is_empty(PNODE pHead) {
         printf("phead is null");
         return false;
     }
-    if(phead->pNext != NULL) {
+    if(pHead->pNext != NULL) {
         return false;
     } else {
         return true;
@@ -116,7 +126,7 @@ bool insert_list(PNODE pHead ,int pos,int val) {
         return false;
     }
 
-    PNODE pInsertedNode = malloc(sizeof(NODE));
+    PNODE pInsertedNode = (PNODE)malloc(sizeof(NODE));
     if(!pInsertedNode) {
         return false;
     }
@@ -127,6 +137,43 @@ bool insert_list(PNODE pHead ,int pos,int val) {
     return true;
 }
 
+bool delete_list(PNODE pHead, int pos , int* pVal) {
+    int index = 0;
+    PNODE p = pHead;
+    if(p == NULL) {
+        return false;
+    }
+    while ( p->pNext !=NULL && index<pos-1)
+    {
+        p= p->pNext;
+        index++;
+    }
+    if( p->pNext == NULL || index > pos -1) {
+        return false;
+    }
+    PNODE deletedP = p->pNext ;
+    *pVal = deletedP->data;
+    p->pNext = deletedP->pNext;
+    free(deletedP);
+    deletedP = NULL;  
+}
 
+void sort_list(PNODE pHead) {
+    if(pHead == NULL) {
+        return;
+    }
+    PNODE p = pHead->pNext;
+    PNODE q;
 
+    for(p; p != NULL; p = p->pNext) {
+        for(q = p->pNext; q!= NULL; q = q->pNext) {
+            if(p->data > q ->data) {
+                int tmp ;
+                tmp = p->data;
+                p->data = q->data;
+                q->data = tmp;
 
+            }
+        }
+    }
+}
